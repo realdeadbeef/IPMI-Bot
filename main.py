@@ -186,6 +186,7 @@ updater.dispatcher.add_handler(CommandHandler('powerstatus', powerStatus))
 updater.dispatcher.add_handler(CommandHandler('powercycle', powerCycle))
 updater.dispatcher.add_handler(CommandHandler('sdrlist', sdrList))
 updater.dispatcher.add_handler(CommandHandler('fanstatus', fanStatus))
+updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CallbackQueryHandler(cbQueryHandler))
 
 updater.start_polling()
