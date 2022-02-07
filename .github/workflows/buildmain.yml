@@ -1,4 +1,4 @@
-name: Build and release docker image on git release
+name: Docker image build
 
 on:
   release:
