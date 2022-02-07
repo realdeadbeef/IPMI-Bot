@@ -15,18 +15,6 @@ currentVersion = float(1.1)
 latestVersion = requests.get("https://api.github.com/repos/realdeadbeef/ipmi-bot/releases/latest")
 latestVersion = float(latestVersion.json()["tag_name"])
 
-if latestVersion != currentVersion:
-    print(f'You are running version {currentVersion} of IPMI-bot which has been outdated by {latestVersion}.\nPlease '
-          f'update for the latest bug fixes and improvements!')
-    CallbackContext.bot.send_message(chat_id=Update.effective_chat.id, text=f'You are running version {currentVersion} '
-                                                                            f'of IPMI-Bot which has been outdated by '
-                                                                            f'{latestVersion}. Please update for the'
-                                                                            f' latest bug fixes and improvements!')
-elif latestVersion == currentVersion:
-    print(f'You are running version {currentVersion} of IPMI-Bot which is the latest version!')
-else:
-    print('ERROR WHILE CHECKING FOR UPDATES')
-
 if configType == 'ini':
     def iniConfigExists():
         if not os.path.isfile('config.ini'):
@@ -76,14 +64,27 @@ else:
     print('Invalid config type!')
     exit(0)
 
+if latestVersion != currentVersion:
+    print(f'You are running version {currentVersion} of IPMI-bot which has been outdated by {latestVersion}.\nPlease '
+          f'update for the latest bug fixes and improvements!')
+    CallbackContext.bot.send_message(chat_id=chatId, text=f'You are running version {currentVersion} '
+                                                          f'of IPMI-Bot which has been outdated by '
+                                                          f'{latestVersion}. Please update for the'
+                                                          f' latest bug fixes and improvements!')
+elif latestVersion == currentVersion:
+    print(f'You are running version {currentVersion} of IPMI-Bot which is the latest version!')
+else:
+    print('ERROR WHILE CHECKING FOR UPDATES')
+
 
 def updateMessage():
     if latestVersion != currentVersion:
-        CallbackContext.bot.send_message(chat_id=Update.effective_chat.id, text=f'You are running version {currentVersion} of '
-                                                                        f'IPMI-Bot which has been outdated by version '
-                                                                        f'{latestVersion}\nPlease go to '
-                                                                        f'https://github.com/realdeadbeef/ipmi-bot '
-                                                                        f'and follow the instructions for upgrading.')
+        CallbackContext.bot.send_message(chat_id=Update.effective_chat.id,
+                                         text=f'You are running version {currentVersion} of '
+                                              f'IPMI-Bot which has been outdated by version '
+                                              f'{latestVersion}\nPlease go to '
+                                              f'https://github.com/realdeadbeef/ipmi-bot '
+                                              f'and follow the instructions for upgrading.')
 
 
 updater = Updater(token=f'{telegramToken}', use_context=True)
