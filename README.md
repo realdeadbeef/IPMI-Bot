@@ -32,9 +32,14 @@ But Wait! What does this command do?
  8. `-e CHAT_ID=chatid`: Sets the chat ID that the bot should respond to messages from, so only you can manage the server.  
  9. **(Optional)** You can remove the `-d` flag and replace it with `-it` to see the bot's output in an interactive console.  
   
----  
-  
-**Managing the docker container:** `docker ps` - This command shows all running containers and their names, as well as other information (add `-a` to see stopped containers as well).    
+---
+**Updating the bot:**  
+1. Remove the old container - `docker rm ipmibot`
+2. Remove the old image - `docker rmi realdeadbeef/ipmi-bot:latest`
+3. Deploy the new container - `docker run -d --network=bridge --name=ipmibot -e IPMI_IP=0.0.0.0 -e IPMI_USER=username -e IPMI_PASSWORD=password -e TOKEN=token -e CHAT_ID=chatid realdeadbeef/ipmi-bot:latest`
+---
+**Managing the docker container:**  
+`docker ps` - This command shows all running containers and their names, as well as other information (add `-a` to see stopped containers as well).    
 `docker start [container name]` - Used to start a docker container.    
 `docker restart [container name]` - Used to restart a docker container    
 `docker stop [container name]` - Used to stop a docker container.    
