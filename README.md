@@ -58,13 +58,14 @@ But Wait! What does this command do?
 **Setting a list of autocomplete commands:**
 1. Send the command `/setcommands` to @BotFather
 2. Paste this template:
-	```
-	start - Display available commands and other useful information
-	powerusage - Displays information on the current power usage of the server
-	poweron - Powers on the server
-	poweroff - Shuts down the server
-	powerstatus - Displays if the server is online
-	powercycle- Powers the server off and back on again
-	sdrlist - Outputs all available sensor readings
-	fanstatus - Displays information on fan usage
-	```
+```
+start - Display available commands and other useful information
+powerusage - Displays information on the current power usage of the server
+poweron - Powers on the server
+poweroff - Shuts down the server
+powerstatus - Displays if the server is online
+powercycle- Powers the server off and back on again
+sdrlist - Outputs all available sensor readings
+fanstatus - Displays information on fan usage
+version - Displays information on the bot's version
+```

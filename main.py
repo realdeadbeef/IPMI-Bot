@@ -10,10 +10,10 @@ from telegram.ext import Updater, CallbackContext, CommandHandler, CallbackQuery
 # Change to desired config type (env or ini)
 configType = 'env'
 
-currentVersion = float(1.1)
+currentVersion = str('1.1.1')
 
 latestVersion = requests.get("https://api.github.com/repos/realdeadbeef/ipmi-bot/releases/latest")
-latestVersion = float(latestVersion.json()["tag_name"])
+latestVersion = str(latestVersion.json()["tag_name"])
 
 if configType == 'ini':
     def iniConfigExists():
@@ -227,6 +227,22 @@ def start(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
+def version(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chatId:
+        if currentVersion != latestVersion:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'You are running version {currentVersion} of '
+                                          f'IPMI-Bot which has been outdated by version '
+                                          f'{latestVersion}\nPlease go to '
+                                          f'https://github.com/realdeadbeef/ipmi-bot '
+                                          f'and follow the instructions for upgrading.')
+        else:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=f'You are running the latest version of IPMI-Bot: {currentVersion}')
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
+                                                                        'command!')
+
+
 updater.dispatcher.add_handler(CommandHandler('powerusage', powerUsage))
 updater.dispatcher.add_handler(CommandHandler('poweron', powerOn))
 updater.dispatcher.add_handler(CommandHandler('poweroff', powerOff))
@@ -235,6 +251,7 @@ updater.dispatcher.add_handler(CommandHandler('powercycle', powerCycle))
 updater.dispatcher.add_handler(CommandHandler('sdrlist', sdrList))
 updater.dispatcher.add_handler(CommandHandler('fanstatus', fanStatus))
 updater.dispatcher.add_handler(CommandHandler('start', start))
+updater.dispatcher.add_handler(CommandHandler('version', version))
 updater.dispatcher.add_handler(CallbackQueryHandler(cbQueryHandler))
 
 updater.start_polling()
