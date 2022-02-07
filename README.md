@@ -16,7 +16,7 @@ This is your chat ID.
 
 **Running the bot:**
 
-`docker run -d --network=bridge --name=ipmibot -e IPMI_IP=0.0.0.0 -e IPMI_USER=username -e IPMI_PASSWORD=password -e TOKEN=token -e CHAT_ID=chatid ipmibot`
+`docker run -d --network=bridge --name=ipmibot -e IPMI_IP=0.0.0.0 -e IPMI_USER=username -e IPMI_PASSWORD=password -e TOKEN=token -e CHAT_ID=chatid realdeadbeef/ipmi-bot:latest`
 
 Make sure to change the environment variables and then run the command.
 
