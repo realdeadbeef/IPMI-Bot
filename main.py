@@ -6,6 +6,8 @@ from configparser import ConfigParser
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Updater, CallbackContext, CommandHandler, CallbackQueryHandler
 
+
+# Change to desired config type (env or ini)
 configType = 'env'
 
 if configType == 'ini':
