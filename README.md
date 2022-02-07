@@ -3,9 +3,9 @@ This is a basic python based telegram bot which is designed to allow you to remo
 
 # Setup
 **Obtaining your telegram bot token and chat ID:**
-1. Obtain your token from @BotFather
-	a. Run the command `/newbot` and follow the prompts.
-	b. Copy the API token. (This should NEVER be shared with anyone, as it gives the holder **complete** control over the bot's actions; as such, it should also be saved somewhere safe.)
+1. Obtain your token from @BotFather  
+	a. Run the command `/newbot` and follow the prompts.  
+	b. Copy the API token. (This should NEVER be shared with anyone, as it gives the holder **complete** control over the bot's actions; as such, it should also be saved somewhere safe.)  
 2. Send `/start` to @RawDataBot and look for:
 ```
 "chat": {
