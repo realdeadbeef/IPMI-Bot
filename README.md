@@ -12,7 +12,7 @@ This is a basic python based telegram bot which is designed to allow you to remo
 	"id": xxxxxxxxxx,
 ```
 This is your chat ID.
-## Method 1 --- Docker 🐳:
+## Method 1 - Docker 🐳:
 
 **Running the bot:**
 
@@ -41,7 +41,7 @@ But Wait! What does this command do?
 `docker stop [container name]` - Used to stop a docker container.  
 `docker kill [container name]` - Used to kill a running/crashed container.
 
-## Method 2 --- Running directly in python
+## Method 2 - Running directly in python
 **Prerequisites:**
 1. The [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) library. (`pip install python-telegram-bot --upgrade`)
 2. [Python 3](https://python.org)
