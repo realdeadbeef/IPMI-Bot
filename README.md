@@ -34,11 +34,12 @@ But Wait! What does this command do?
 
 ---
 
-**Managing the docker container:**
-`docker ps` - This command shows all running containers and their names, as well as other information (add `-a` to see stopped containers as well).
-`docker start [container name]` - Used to start a docker container.
-`docker stop [container name]` - Used to stop a docker container.
-`docker kill [container name]` - Used to kill a running container.
+**Managing the docker container:**  
+`docker ps` - This command shows all running containers and their names, as well as other information (add `-a` to see stopped containers as well).  
+`docker start [container name]` - Used to start a docker container.  
+`docker restart [container name]` - Used to restart a docker container  
+`docker stop [container name]` - Used to stop a docker container.  
+`docker kill [container name]` - Used to kill a running/crashed container.
 
 ## Method 2 --- Running directly in python
 **Prerequisites:**
@@ -46,5 +47,5 @@ But Wait! What does this command do?
 2. [Python 3](https://python.org)
 3. [ipmitool](https://www.ibm.com/docs/en/power8/8335-GTA?topic=overview-ipmitool) (`apt install ipmitool`)
 
-**Running:**
+**Running:**  
 Change `configType` to `ini` and run `main.py`. Change the settings in the new `config.ini` file to your desired configuration and run `main.py` once more. That's it!
