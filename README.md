@@ -12,7 +12,7 @@ This is a basic python based telegram bot which is designed to allow you to remo
 	"id": 1234567890,
 ```
 This is your chat ID.
-## Method 1 --- Docker:
+## Method 1 --- Docker 🐳:
 
 **Running the bot:**
 
