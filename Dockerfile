@@ -9,6 +9,6 @@ WORKDIR /usr/src/bot
 COPY ipmicommands.py /usr/src/bot
 COPY main.py /usr/src/bot
 
-RUN pip install --no-cache-dir python-telegram-bot requests os logging
+RUN pip install --no-cache-dir python-telegram-bot requests
 
 CMD ["python", "main.py"]
