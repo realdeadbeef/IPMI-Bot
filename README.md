@@ -9,7 +9,7 @@ This is a basic python based telegram bot which is designed to allow you to remo
 2. Send `/start` to @RawDataBot and look for:
 ```
 "chat": {
-	"id": 1234567890,
+	"id": xxxxxxxxxx,
 ```
 This is your chat ID.
 ## Method 1 --- Docker 🐳:
