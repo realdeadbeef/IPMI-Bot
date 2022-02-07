@@ -67,25 +67,10 @@ else:
 if latestVersion != currentVersion:
     print(f'You are running version {currentVersion} of IPMI-bot which has been outdated by {latestVersion}.\nPlease '
           f'update for the latest bug fixes and improvements!')
-    CallbackContext.bot.send_message(chat_id=chatId, text=f'You are running version {currentVersion} '
-                                                          f'of IPMI-Bot which has been outdated by '
-                                                          f'{latestVersion}. Please update for the'
-                                                          f' latest bug fixes and improvements!')
 elif latestVersion == currentVersion:
     print(f'You are running version {currentVersion} of IPMI-Bot which is the latest version!')
 else:
     print('ERROR WHILE CHECKING FOR UPDATES')
-
-
-def updateMessage():
-    if latestVersion != currentVersion:
-        CallbackContext.bot.send_message(chat_id=Update.effective_chat.id,
-                                         text=f'You are running version {currentVersion} of '
-                                              f'IPMI-Bot which has been outdated by version '
-                                              f'{latestVersion}\nPlease go to '
-                                              f'https://github.com/realdeadbeef/ipmi-bot '
-                                              f'and follow the instructions for upgrading.')
-
 
 updater = Updater(token=f'{telegramToken}', use_context=True)
 dispatcher = updater.dispatcher
@@ -96,7 +81,13 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 def powerUsage(update: Update, context: CallbackContext):
     if update.effective_chat.id == chatId:
         context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.powerUsage(serverIP, userName, password))
-        updateMessage()
+        if latestVersion != currentVersion:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'You are running version {currentVersion} of '
+                                          f'IPMI-Bot which has been outdated by version '
+                                          f'{latestVersion}\nPlease go to '
+                                          f'https://github.com/realdeadbeef/ipmi-bot '
+                                          f'and follow the instructions for upgrading.')
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
@@ -139,7 +130,13 @@ def powerOff(update: Update, context: CallbackContext):
 def powerStatus(update: Update, context: CallbackContext):
     if update.effective_chat.id == chatId:
         context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.powerStatus(serverIP, userName, password))
-        updateMessage()
+        if latestVersion != currentVersion:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'You are running version {currentVersion} of '
+                                          f'IPMI-Bot which has been outdated by version '
+                                          f'{latestVersion}\nPlease go to '
+                                          f'https://github.com/realdeadbeef/ipmi-bot '
+                                          f'and follow the instructions for upgrading.')
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
@@ -165,7 +162,13 @@ def powerCycle(update: Update, context: CallbackContext):
 def sdrList(update: Update, context: CallbackContext):
     if update.effective_chat.id == chatId:
         context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.sdrList(serverIP, userName, password))
-        updateMessage()
+        if latestVersion != currentVersion:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'You are running version {currentVersion} of '
+                                          f'IPMI-Bot which has been outdated by version '
+                                          f'{latestVersion}\nPlease go to '
+                                          f'https://github.com/realdeadbeef/ipmi-bot '
+                                          f'and follow the instructions for upgrading.')
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
@@ -174,7 +177,13 @@ def sdrList(update: Update, context: CallbackContext):
 def fanStatus(update: Update, context: CallbackContext):
     if update.effective_chat.id == chatId:
         context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.fanStatus(serverIP, userName, password))
-        updateMessage()
+        if latestVersion != currentVersion:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'You are running version {currentVersion} of '
+                                          f'IPMI-Bot which has been outdated by version '
+                                          f'{latestVersion}\nPlease go to '
+                                          f'https://github.com/realdeadbeef/ipmi-bot '
+                                          f'and follow the instructions for upgrading.')
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
@@ -193,7 +202,13 @@ def cbQueryHandler(update: Update, context: CallbackContext):
         query.edit_message_text(text=ipmi.powerCycle(serverIP, userName, password))
     else:
         query.edit_message_text(text='wat')
-    updateMessage()
+    if latestVersion != currentVersion:
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=f'You are running version {currentVersion} of '
+                                      f'IPMI-Bot which has been outdated by version '
+                                      f'{latestVersion}\nPlease go to '
+                                      f'https://github.com/realdeadbeef/ipmi-bot '
+                                      f'and follow the instructions for upgrading.')
 
 
 def start(update: Update, context: CallbackContext):
