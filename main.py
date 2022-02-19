@@ -1,91 +1,89 @@
 import logging
-import ipmicommands as ipmi
 import os
-import requests
-
 from configparser import ConfigParser
+
+import requests
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Updater, CallbackContext, CommandHandler, CallbackQueryHandler
 
+import ipmicommands as ipmi
+
 # Change to desired config type (env or ini)
-configType = 'env'
+config_type = 'ini'
 
-currentVersion = str('1.1.1')
+current_version = str('1.1.1')
 
-latestVersion = requests.get("https://api.github.com/repos/realdeadbeef/ipmi-bot/releases/latest")
-latestVersion = str(latestVersion.json()["tag_name"])
+latest_version = requests.get("https://api.github.com/repos/realdeadbeef/ipmi-bot/releases/latest")
+latest_version = str(latest_version.json()["tag_name"])
 
-if configType == 'ini':
-    def iniConfigExists():
-        if not os.path.isfile('config.ini'):
+
+def make_config(path):  # sourcery skip: extract-method, last-if-guard, remove-unnecessary-else,
+    # swap-if-else-branches
+    if not os.path.isdir('./config'):
+        os.mkdir('./config')
+        if not os.path.isfile(path):
             from configparser import ConfigParser
-            config_object = ConfigParser()
+            config_obj = ConfigParser()
 
-            config_object["IPMI"] = {
+            config_obj["IPMI"] = {
                 "serverIP": "0.0.0.0",
                 "username": "ipmiguy",
                 "password": "password"
             }
 
-            config_object["TELEGRAM"] = {
+            config_obj["TELEGRAM"] = {
                 "token": "token",
                 "chatID": "chatid"
             }
-            with open('config.ini', 'w') as conf:
-                config_object.write(conf)
+            with open(path, 'w') as conf:
+                config_obj.write(conf)
 
             print("Config file has been created, please make your changes and re-run this script")
             exit(0)
+    else:
+        return True
 
 
-    iniConfigExists()
+ini_path = './config/config.ini'
 
-    config_object = ConfigParser()
-    config_object.read("config.ini")
+make_config(ini_path)
 
-    ipmiconfigdata = config_object["IPMI"]
+config_object = ConfigParser()
+config_object.read(ini_path)
 
-    serverIP = ipmiconfigdata["serverip"]
-    userName = ipmiconfigdata["username"]
-    password = ipmiconfigdata["password"]
+ipmi_config_data = config_object["IPMI"]
 
-    telegramconfigdata = config_object["TELEGRAM"]
+server_ip = ipmi_config_data["serverip"]
+username = ipmi_config_data["username"]
+password = ipmi_config_data["password"]
 
-    telegramToken = telegramconfigdata["token"]
-    chatId = int(telegramconfigdata["chatID"])
-elif configType == 'env':
-    serverIP = os.environ.get('IPMI_IP')
-    userName = os.environ.get('IPMI_USER')
-    password = os.environ.get('IPMI_PASSWORD')
+telegram_config_data = config_object["TELEGRAM"]
 
-    telegramToken = os.environ.get('TOKEN')
-    chatId = int(os.environ.get('CHAT_ID'))
-else:
-    print('Invalid config type!')
-    exit(0)
+token = telegram_config_data["token"]
+chat_id = int(telegram_config_data["chatID"])
 
-if latestVersion != currentVersion:
-    print(f'You are running version {currentVersion} of IPMI-bot which has been outdated by {latestVersion}.\nPlease '
+if latest_version != current_version:
+    print(f'You are running version {current_version} of IPMI-bot which has been outdated by {latest_version}.\nPlease '
           f'update for the latest bug fixes and improvements!')
-elif latestVersion == currentVersion:
-    print(f'You are running version {currentVersion} of IPMI-Bot which is the latest version!')
+elif latest_version == current_version:
+    print(f'You are running version {current_version} of IPMI-Bot which is the latest version!')
 else:
     print('ERROR WHILE CHECKING FOR UPDATES')
 
-updater = Updater(token=f'{telegramToken}', use_context=True)
+updater = Updater(token=f'{token}', use_context=True)
 dispatcher = updater.dispatcher
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 
-def powerUsage(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.powerUsage(serverIP, userName, password))
-        if latestVersion != currentVersion:
+def power_usage(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.powerUsage(server_ip, username, password))
+        if latest_version != current_version:
             context.bot.send_message(chat_id=update.effective_chat.id,
-                                     text=f'You are running version {currentVersion} of '
+                                     text=f'You are running version {current_version} of '
                                           f'IPMI-Bot which has been outdated by version '
-                                          f'{latestVersion}\nPlease go to '
+                                          f'{latest_version}\nPlease go to '
                                           f'https://github.com/realdeadbeef/ipmi-bot '
                                           f'and follow the instructions for upgrading.')
     else:
@@ -93,8 +91,8 @@ def powerUsage(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def powerOn(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
+def power_on(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
         keyboard = [
             [
                 InlineKeyboardButton("Yes", callback_data='poweron'),
@@ -110,8 +108,8 @@ def powerOn(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def powerOff(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
+def power_off(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
         keyboard = [
             [
                 InlineKeyboardButton("Yes", callback_data='poweroff'),
@@ -127,14 +125,14 @@ def powerOff(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def powerStatus(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.powerStatus(serverIP, userName, password))
-        if latestVersion != currentVersion:
+def power_status(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.powerStatus(server_ip, username, password))
+        if latest_version != current_version:
             context.bot.send_message(chat_id=update.effective_chat.id,
-                                     text=f'You are running version {currentVersion} of '
+                                     text=f'You are running version {current_version} of '
                                           f'IPMI-Bot which has been outdated by version '
-                                          f'{latestVersion}\nPlease go to '
+                                          f'{latest_version}\nPlease go to '
                                           f'https://github.com/realdeadbeef/ipmi-bot '
                                           f'and follow the instructions for upgrading.')
     else:
@@ -142,8 +140,8 @@ def powerStatus(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def powerCycle(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
+def power_cycle(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
         keyboard = [
             [
                 InlineKeyboardButton("Yes", callback_data='powercycle'),
@@ -159,14 +157,14 @@ def powerCycle(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def sdrList(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.sdrList(serverIP, userName, password))
-        if latestVersion != currentVersion:
+def sdr_list(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.sdrList(server_ip, username, password))
+        if latest_version != current_version:
             context.bot.send_message(chat_id=update.effective_chat.id,
-                                     text=f'You are running version {currentVersion} of '
+                                     text=f'You are running version {current_version} of '
                                           f'IPMI-Bot which has been outdated by version '
-                                          f'{latestVersion}\nPlease go to '
+                                          f'{latest_version}\nPlease go to '
                                           f'https://github.com/realdeadbeef/ipmi-bot '
                                           f'and follow the instructions for upgrading.')
     else:
@@ -174,14 +172,14 @@ def sdrList(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def fanStatus(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.fanStatus(serverIP, userName, password))
-        if latestVersion != currentVersion:
+def fan_status(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=ipmi.fanStatus(server_ip, username, password))
+        if latest_version != current_version:
             context.bot.send_message(chat_id=update.effective_chat.id,
-                                     text=f'You are running version {currentVersion} of '
+                                     text=f'You are running version {current_version} of '
                                           f'IPMI-Bot which has been outdated by version '
-                                          f'{latestVersion}\nPlease go to '
+                                          f'{latest_version}\nPlease go to '
                                           f'https://github.com/realdeadbeef/ipmi-bot '
                                           f'and follow the instructions for upgrading.')
     else:
@@ -189,30 +187,30 @@ def fanStatus(update: Update, context: CallbackContext):
                                                                         'command!')
 
 
-def cbQueryHandler(update: Update, context: CallbackContext):
+def cb_query_handler(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
     if query.data == 'cancel':
         query.edit_message_text(text='Cancelled')
     elif query.data == 'poweron':
-        query.edit_message_text(text=ipmi.powerOn(serverIP, userName, password))
+        query.edit_message_text(text=ipmi.powerOn(server_ip, username, password))
     elif query.data == 'poweroff':
-        query.edit_message_text(text=ipmi.powerOff(serverIP, userName, password))
+        query.edit_message_text(text=ipmi.powerOff(server_ip, username, password))
     elif query.data == 'powercycle':
-        query.edit_message_text(text=ipmi.powerCycle(serverIP, userName, password))
+        query.edit_message_text(text=ipmi.powerCycle(server_ip, username, password))
     else:
         query.edit_message_text(text='wat')
-    if latestVersion != currentVersion:
+    if latest_version != current_version:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=f'You are running version {currentVersion} of '
+                                 text=f'You are running version {current_version} of '
                                       f'IPMI-Bot which has been outdated by version '
-                                      f'{latestVersion}\nPlease go to '
+                                      f'{latest_version}\nPlease go to '
                                       f'https://github.com/realdeadbeef/ipmi-bot '
                                       f'and follow the instructions for upgrading.')
 
 
 def start(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
+    if update.effective_chat.id == chat_id:
         context.bot.send_message(chat_id=update.effective_chat.id, text='Here are a list of commands to get '
                                                                         'started:\n\n'
                                                                         '/powerusage\n'
@@ -221,38 +219,40 @@ def start(update: Update, context: CallbackContext):
                                                                         '/powerstatus\n'
                                                                         '/powercycle\n'
                                                                         '/sdrlist\n'
-                                                                        '/fanstatus\n')
+                                                                        '/fanstatus\n'
+                                                                        '/version\n')
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
 
 
 def version(update: Update, context: CallbackContext):
-    if update.effective_chat.id == chatId:
-        if currentVersion != latestVersion:
+    if update.effective_chat.id == chat_id:
+        if current_version != latest_version:
             context.bot.send_message(chat_id=update.effective_chat.id,
-                                     text=f'You are running version {currentVersion} of '
+                                     text=f'You are running version {current_version} of '
                                           f'IPMI-Bot which has been outdated by version '
-                                          f'{latestVersion}\nPlease go to '
+                                          f'{latest_version}\nPlease go to '
                                           f'https://github.com/realdeadbeef/ipmi-bot '
                                           f'and follow the instructions for upgrading.')
         else:
-            context.bot.send_message(chat_id=update.effective_chat.id, text=f'You are running the latest version of IPMI-Bot: {currentVersion}')
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'You are running the latest version of IPMI-Bot: {current_version}')
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
 
 
-updater.dispatcher.add_handler(CommandHandler('powerusage', powerUsage))
-updater.dispatcher.add_handler(CommandHandler('poweron', powerOn))
-updater.dispatcher.add_handler(CommandHandler('poweroff', powerOff))
-updater.dispatcher.add_handler(CommandHandler('powerstatus', powerStatus))
-updater.dispatcher.add_handler(CommandHandler('powercycle', powerCycle))
-updater.dispatcher.add_handler(CommandHandler('sdrlist', sdrList))
-updater.dispatcher.add_handler(CommandHandler('fanstatus', fanStatus))
+updater.dispatcher.add_handler(CommandHandler('powerusage', power_usage))
+updater.dispatcher.add_handler(CommandHandler('poweron', power_on))
+updater.dispatcher.add_handler(CommandHandler('poweroff', power_off))
+updater.dispatcher.add_handler(CommandHandler('powerstatus', power_status))
+updater.dispatcher.add_handler(CommandHandler('powercycle', power_cycle))
+updater.dispatcher.add_handler(CommandHandler('sdrlist', sdr_list))
+updater.dispatcher.add_handler(CommandHandler('fanstatus', fan_status))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('version', version))
-updater.dispatcher.add_handler(CallbackQueryHandler(cbQueryHandler))
+updater.dispatcher.add_handler(CallbackQueryHandler(cb_query_handler))
 
 updater.start_polling()
 updater.idle()
