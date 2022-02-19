@@ -1,4 +1,0 @@
-logging
-requests
-os
-python-telegram-bot

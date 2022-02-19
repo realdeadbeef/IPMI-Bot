@@ -11,7 +11,7 @@ import ipmicommands as ipmi
 # Change to desired config type (env or ini)
 config_type = 'ini'
 
-current_version = str('1.1.1')
+current_version = str('1.2')
 
 latest_version = requests.get("https://api.github.com/repos/realdeadbeef/ipmi-bot/releases/latest")
 latest_version = str(latest_version.json()["tag_name"])
@@ -119,7 +119,25 @@ def power_off(update: Update, context: CallbackContext):
 
         reply_markup = InlineKeyboardMarkup(keyboard)
 
-        update.message.reply_text('Are you sure you want to shut down the server?', reply_markup=reply_markup)
+        update.message.reply_text('This command sends a hard shutdown to the server. You might want to use the '
+                                  '/softshutdown command instead. Do you wish to proceed?', reply_markup=reply_markup)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
+                                                                        'command!')
+
+
+def soft_shutdown(update: Update, context: CallbackContext):
+    if update.effective_chat.id == chat_id:
+        keyboard = [
+            [
+                InlineKeyboardButton("Yes", callback_data='soft'),
+                InlineKeyboardButton("No", callback_data='cancel'),
+            ],
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        update.message.reply_text('Are you sure you want to gracefully shutdown the server?', reply_markup=reply_markup)
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text='You do not have permission to run this '
                                                                         'command!')
@@ -198,6 +216,8 @@ def cb_query_handler(update: Update, context: CallbackContext):
         query.edit_message_text(text=ipmi.powerOff(server_ip, username, password))
     elif query.data == 'powercycle':
         query.edit_message_text(text=ipmi.powerCycle(server_ip, username, password))
+    elif query.data == 'soft':
+        query.edit_message_text(text=ipmi.soft_shutdown(server_ip, username, password))
     else:
         query.edit_message_text(text='wat')
     if latest_version != current_version:
@@ -246,6 +266,7 @@ def version(update: Update, context: CallbackContext):
 updater.dispatcher.add_handler(CommandHandler('powerusage', power_usage))
 updater.dispatcher.add_handler(CommandHandler('poweron', power_on))
 updater.dispatcher.add_handler(CommandHandler('poweroff', power_off))
+updater.dispatcher.add_handler(CommandHandler('softshutdown', soft_shutdown))
 updater.dispatcher.add_handler(CommandHandler('powerstatus', power_status))
 updater.dispatcher.add_handler(CommandHandler('powercycle', power_cycle))
 updater.dispatcher.add_handler(CommandHandler('sdrlist', sdr_list))
