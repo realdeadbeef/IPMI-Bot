@@ -1,4 +1,5 @@
-# IPMI Bot   
+# IPMI Bot 
+[![Docker image build](https://github.com/realdeadbeef/IPMI-Bot/actions/workflows/build-and-push-image.yml/badge.svg)](https://github.com/realdeadbeef/IPMI-Bot/actions/workflows/build-and-push-image.yml) [![Docker Image CI](https://github.com/realdeadbeef/IPMI-Bot/actions/workflows/docker-build-check.yml/badge.svg)](https://github.com/realdeadbeef/IPMI-Bot/actions/workflows/docker-build-check.yml)  
 This is a basic python based telegram bot which is designed to allow you to remotely manage a device using IPMI.  
   
 # Setup  
