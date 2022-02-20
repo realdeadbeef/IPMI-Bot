@@ -21,30 +21,30 @@ def make_config(path):  # sourcery skip: extract-method, last-if-guard, remove-u
     # swap-if-else-branches
     if not os.path.isdir('./config'):
         os.mkdir('./config')
-        if not os.path.isfile(path):
-            from configparser import ConfigParser
-            config_obj = ConfigParser()
+    if not os.path.isfile(path):
+        from configparser import ConfigParser
+        config_obj = ConfigParser()
 
-            config_obj["IPMI"] = {
-                "serverIP": "0.0.0.0",
-                "username": "ipmiguy",
-                "password": "password"
-            }
+        config_obj["IPMI"] = {
+            "serverIP": "0.0.0.0",
+            "username": "ipmiguy",
+            "password": "password"
+        }
 
-            config_obj["TELEGRAM"] = {
-                "token": "token",
-                "chatID": "chatid"
-            }
-            with open(path, 'w') as conf:
-                config_obj.write(conf)
+        config_obj["TELEGRAM"] = {
+            "token": "token",
+            "chatID": "chatid"
+        }
+        with open(path, 'w') as conf:
+            config_obj.write(conf)
 
-            print("Config file has been created, please make your changes and re-run this script")
-            exit(0)
+        print("Config file has been created, please make your changes and re-run this script")
+        exit(0)
     else:
         return True
 
 
-ini_path = './config/config.ini'
+ini_path = '/usr/src/bot/config/config.ini'
 
 make_config(ini_path)
 
