@@ -11,7 +11,7 @@ import ipmicommands as ipmi
 # Change to desired config type (env or ini)
 config_type = 'ini'
 
-current_version = str('1.2')
+current_version = '1.2'
 
 latest_version = requests.get("https://api.github.com/repos/realdeadbeef/ipmi-bot/releases/latest")
 latest_version = str(latest_version.json()["tag_name"])
@@ -65,11 +65,8 @@ chat_id = int(telegram_config_data["chatID"])
 if latest_version != current_version:
     print(f'You are running version {current_version} of IPMI-bot which has been outdated by {latest_version}.\nPlease '
           f'update for the latest bug fixes and improvements!')
-elif latest_version == current_version:
-    print(f'You are running version {current_version} of IPMI-Bot which is the latest version!')
 else:
-    print('ERROR WHILE CHECKING FOR UPDATES')
-
+    print(f'You are running version {current_version} of IPMI-Bot which is the latest version!')
 updater = Updater(token=f'{token}', use_context=True)
 dispatcher = updater.dispatcher
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
